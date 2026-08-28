@@ -80,13 +80,56 @@ Todo eso vive en [`src/lib/calc.ts`](src/lib/calc.ts).
 No hay botón de guardar: cada cambio se escribe en IndexedDB con un debounce de 350 ms.
 Abajo a la derecha aparece "Guardando… / Guardado".
 
+Al arrancar se llama a `navigator.storage.persist()`. Es un **pedido**, no una garantía: el
+navegador lo concede según su criterio, y lo que más pesa es que la app esté instalada en la
+pantalla de inicio. Se puede chequear en cualquier momento con
+`await navigator.storage.persisted()` desde la consola.
+
 - Recetas: store `macar-recetas`, clave `recetas`
 - Fotos: misma store, clave `foto:<id>`, guardadas como Blob JPEG de 1000×1000
   (recorte cuadrado al centro, calidad 0.85)
 
 Al borrar una receta también se borra su foto.
 
-## Versión publicada
+## Publicar en GitHub Pages (la casa definitiva de la app)
+
+Es el lugar donde conviene que viva, no el artifact. Motivo: los datos se guardan por
+dominio, y en GitHub Pages la app tiene dominio propio. Ahí el navegador la trata como sitio
+de primera mano, deja instalarla en la pantalla de inicio y — una vez instalada — se
+compromete a no borrarle el almacenamiento. Dentro del iframe del artifact nada de eso
+aplica: Safari en iPhone puede descartar el almacenamiento de un iframe ajeno a los pocos
+días.
+
+Ya está el repo iniciado y commiteado, y el workflow de Actions en
+`.github/workflows/deploy.yml`. Falta:
+
+1. Crear un repo vacío en github.com (público; con cuenta gratis, Pages solo funciona en
+   repos públicos). El código no tiene nada sensible: ninguna receta viaja al repo.
+2. Conectarlo y pushear:
+
+   ```bash
+   git remote add origin https://github.com/USUARIO/REPO.git
+   git push -u origin main
+   ```
+
+3. En el repo: **Settings → Pages → Source: GitHub Actions**.
+
+Queda en `https://USUARIO.github.io/REPO/`. Cada `git push` a `main` la reconstruye y
+republica sola.
+
+El `base: './'` de [vite.config.ts](vite.config.ts) hace que ande en cualquier subcarpeta,
+así que el nombre del repo no importa.
+
+### Que se instale en la pantalla de inicio
+
+Es el paso que protege los datos, y lo tiene que hacer ella una vez:
+
+- **iPhone (Safari):** Compartir → "Agregar a inicio"
+- **Android (Chrome):** menú de tres puntos → "Instalar app"
+
+A partir de ahí abre sin barra del navegador y el almacenamiento pasa a ser durable.
+
+## Versión publicada como Artifact (preview)
 
 https://claude.ai/code/artifact/785bf4d5-612b-4d24-a9ee-ce0c86582a58
 
