@@ -394,6 +394,15 @@ button:focus-visible {
   gap: 8px;
   font-family: var(--mono);
   font-variant-numeric: tabular-nums;
+  /* Con precios largos los dos valores no entran en una línea. Que bajen
+     enteros antes que partirse: "/porción" solo quedaba horrible. */
+  flex-wrap: wrap;
+  row-gap: 2px;
+}
+
+.tarjeta-venta,
+.tarjeta-porcion {
+  white-space: nowrap;
 }
 
 .tarjeta-venta {
@@ -428,9 +437,45 @@ button:focus-visible {
   opacity: 0.5;
 }
 
+/* Entrada escalonada: las tarjetas suben y aparecen de a una.
+   'backwards' mantiene el estado inicial durante el retraso; al terminar la
+   animación el elemento vuelve a sus propios estilos, así el hover funciona. */
+@keyframes tarjeta-entra {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.tarjeta {
+  animation: tarjeta-entra 0.42s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+.btn-volver {
+  align-self: flex-start;
+  border: none;
+  background: transparent;
+  color: var(--tenue);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 10px 6px 0;
+  cursor: pointer;
+  transition: color 0.12s ease;
+}
+
+.btn-volver:hover {
+  color: var(--acento);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tarjeta {
     transition: none;
+    animation: none;
   }
 
   .tarjeta:hover {
@@ -1251,6 +1296,11 @@ button:focus-visible {
 
   .btn-galeria {
     min-height: 44px;
+  }
+
+  .btn-volver {
+    min-height: 40px;
+    padding-left: 0;
   }
 
   /* Dos columnas en celular: entran de a pares sin que la foto quede diminuta. */

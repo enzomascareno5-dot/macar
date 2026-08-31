@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { calcularReceta, parseNum } from '../lib/calc'
-import { money, moneyCorto, num } from '../lib/format'
+import { moneyCorto, num } from '../lib/format'
 import { useFotoUrl } from '../lib/useFotoUrl'
 import type { Receta } from '../lib/types'
 
@@ -50,8 +50,8 @@ export default function Galeria({ recetas, busqueda, onAbrir, onNueva }: Props) 
         </p>
       ) : (
         <div className="galeria-grilla">
-          {visibles.map((receta) => (
-            <TarjetaReceta key={receta.id} receta={receta} onAbrir={onAbrir} />
+          {visibles.map((receta, i) => (
+            <TarjetaReceta key={receta.id} receta={receta} indice={i} onAbrir={onAbrir} />
           ))}
         </div>
       )}
@@ -61,17 +61,28 @@ export default function Galeria({ recetas, busqueda, onAbrir, onNueva }: Props) 
 
 function TarjetaReceta({
   receta,
+  indice,
   onAbrir,
 }: {
   receta: Receta
+  indice: number
   onAbrir: (id: string) => void
 }) {
   const url = useFotoUrl(receta.fotoId)
   const calc = useMemo(() => calcularReceta(receta), [receta])
   const porciones = parseNum(receta.porciones)
 
+  // El tope del índice evita que, con muchas recetas, la última tarjeta tarde
+  // una eternidad en aparecer: a partir de la doceava entran todas juntas.
+  const retraso = Math.min(indice, 11)
+
   return (
-    <button type="button" className="tarjeta" onClick={() => onAbrir(receta.id)}>
+    <button
+      type="button"
+      className="tarjeta"
+      onClick={() => onAbrir(receta.id)}
+      style={{ '--i': retraso } as React.CSSProperties}
+    >
       <span className="tarjeta-foto">
         {/* Sin loading="lazy": las fotos ya están en el disco del teléfono, no
             hay red que ahorrar, y el lazy solo retrasa lo que ya está a mano. */}
@@ -88,7 +99,7 @@ function TarjetaReceta({
         <span className="tarjeta-nombre">{receta.nombre || 'Sin nombre'}</span>
 
         <span className="tarjeta-precios">
-          <span className="tarjeta-venta">{money(calc.precioVenta)}</span>
+          <span className="tarjeta-venta">{moneyCorto(calc.precioVenta)}</span>
           <span className="tarjeta-porcion">
             {moneyCorto(calc.porPorcion)} <span className="tarjeta-tenue">/porción</span>
           </span>

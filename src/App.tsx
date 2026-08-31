@@ -17,7 +17,9 @@ export default function App() {
   const [listo, setListo] = useState(false)
   const [estado, setEstado] = useState<EstadoGuardado>('inicial')
   const [backupAbierto, setBackupAbierto] = useState(false)
-  const [vista, setVista] = useState<Vista>('receta')
+  // La galería es la pantalla de entrada: al abrir la app se ven todas las
+  // recetas con su foto, y desde ahí se entra a una.
+  const [vista, setVista] = useState<Vista>('galeria')
   const timerRef = useRef<number | null>(null)
 
   // Las recetas viven solo acá, así que le pedimos al navegador que no las
@@ -34,6 +36,7 @@ export default function App() {
         if (!vivo) return
         setRecetas(datos)
         setSeleccionadaId(datos[0]?.id ?? null)
+        if (datos.length === 0) setVista('receta')
       })
       .finally(() => {
         if (vivo) setListo(true)
@@ -117,6 +120,7 @@ export default function App() {
     const restantes = recetas.filter((r) => r.id !== receta.id)
     setRecetas(restantes)
     if (seleccionadaId === receta.id) setSeleccionadaId(restantes[0]?.id ?? null)
+    setVista(restantes.length > 0 ? 'galeria' : 'receta')
   }
 
   async function importar(texto: string) {
@@ -156,17 +160,18 @@ export default function App() {
       />
 
       <main className="contenido">
-        {vista === 'galeria' ? (
+        {recetas.length > 0 && vista === 'galeria' ? (
           <Galeria
             recetas={recetas}
             busqueda={busqueda}
             onAbrir={abrirReceta}
             onNueva={nuevaReceta}
           />
-        ) : seleccionada ? (
+        ) : recetas.length > 0 && seleccionada ? (
           <RecetaEditor
             key={seleccionada.id}
             receta={seleccionada}
+            onVolver={() => setVista('galeria')}
             onCambiar={(cambios) => actualizarReceta(seleccionada.id, cambios)}
             onDuplicar={() => duplicarReceta(seleccionada)}
             onBorrar={() => borrarReceta(seleccionada)}
