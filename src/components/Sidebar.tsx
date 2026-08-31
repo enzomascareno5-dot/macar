@@ -10,6 +10,8 @@ interface Props {
   onSeleccionar: (id: string) => void
   onNueva: () => void
   onBackup: () => void
+  vistaGaleria: boolean
+  onAlternarGaleria: () => void
 }
 
 export default function Sidebar({
@@ -20,6 +22,8 @@ export default function Sidebar({
   onSeleccionar,
   onNueva,
   onBackup,
+  vistaGaleria,
+  onAlternarGaleria,
 }: Props) {
   const filtro = busqueda.trim().toLowerCase()
   const visibles = filtro
@@ -55,9 +59,20 @@ export default function Sidebar({
           />
         </div>
 
-        <button type="button" className="btn-nueva" onClick={onNueva}>
-          + Nueva receta
-        </button>
+        <div className="sidebar-botones">
+          <button type="button" className="btn-nueva" onClick={onNueva}>
+            + Nueva receta
+          </button>
+          <button
+            type="button"
+            className={`btn-galeria ${vistaGaleria ? 'btn-galeria-activo' : ''}`}
+            onClick={onAlternarGaleria}
+            aria-pressed={vistaGaleria}
+            title={vistaGaleria ? 'Volver a la receta' : 'Ver todas con foto'}
+          >
+            <span aria-hidden="true">&#9638;</span> Galería
+          </button>
+        </div>
 
         <input
           type="search"

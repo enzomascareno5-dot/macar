@@ -6,6 +6,7 @@ import { ingredienteVacio, UNIDADES, type Ingrediente, type Receta } from '../li
 
 interface Props {
   receta: Receta
+  onVolver: () => void
   onCambiar: (cambios: Partial<Receta>) => void
   onDuplicar: () => void
   onBorrar: () => void
@@ -17,7 +18,13 @@ const PLACEHOLDER_PASOS = [
   'Agregar los huevos de a uno',
 ].join('\n')
 
-export default function RecetaEditor({ receta, onCambiar, onDuplicar, onBorrar }: Props) {
+export default function RecetaEditor({
+  receta,
+  onVolver,
+  onCambiar,
+  onDuplicar,
+  onBorrar,
+}: Props) {
   const calc = useMemo(() => calcularReceta(receta), [receta])
 
   const pasos = receta.pasos
@@ -44,6 +51,10 @@ export default function RecetaEditor({ receta, onCambiar, onDuplicar, onBorrar }
 
   return (
     <section className="editor">
+      <button type="button" className="btn-volver" onClick={onVolver}>
+        <span aria-hidden="true">&#8592;</span> Todas las recetas
+      </button>
+
       <header className="editor-encabezado">
         <FotoReceta fotoId={receta.fotoId} onCambiarFoto={(fotoId) => onCambiar({ fotoId })} />
 
