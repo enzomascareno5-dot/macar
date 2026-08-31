@@ -3,6 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- GitHub Pages no deja mandar cabeceras propias, así que la CSP va por meta.
+         Segunda barrera: aunque se colara contenido malicioso, no podría llamar
+         a ningún dominio de afuera. Las fotos son blob:/data: porque salen de
+         IndexedDB, y 'unsafe-inline' en estilos hace falta por los style={} de React. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+               script-src 'self';
+               style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+               font-src 'self' https://fonts.gstatic.com;
+               img-src 'self' blob: data:;
+               connect-src 'self' blob: data:;
+               manifest-src 'self';
+               worker-src 'self';
+               object-src 'none';
+               base-uri 'self';
+               form-action 'none'"
+    />
     <title>Macar · Costos de recetas</title>
 
     <link rel="icon" type="image/png" href="./favicon.png" />
