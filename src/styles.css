@@ -232,6 +232,212 @@ button:focus-visible {
   color: #fff;
 }
 
+/* ---------- Galería ---------- */
+
+.sidebar-botones {
+  display: flex;
+  gap: 8px;
+}
+
+.sidebar-botones .btn-nueva {
+  flex: 1;
+}
+
+.btn-galeria {
+  flex: 0 0 auto;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: var(--blanco);
+  color: var(--texto);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease;
+}
+
+.btn-galeria:hover {
+  border-color: var(--acento);
+  color: var(--acento);
+}
+
+.btn-galeria-activo,
+.btn-galeria-activo:hover {
+  background: var(--etiqueta);
+  border-color: var(--etiqueta);
+  color: var(--ticket);
+}
+
+.galeria {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.galeria-encabezado {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.galeria-titulo {
+  font-family: var(--titulo);
+  font-size: clamp(28px, 3.4vw, 38px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.galeria-conteo {
+  margin: 4px 0 0;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  color: var(--tenue);
+}
+
+.galeria-vacia {
+  margin: 0;
+  padding: 40px 0;
+  text-align: center;
+  color: var(--tenue);
+}
+
+.galeria-grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 18px;
+  align-items: stretch;
+}
+
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding: 0;
+  overflow: hidden;
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  height: 100%;
+  cursor: pointer;
+  transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.tarjeta:hover {
+  transform: translateY(-3px);
+  border-color: var(--acento);
+  box-shadow: 0 6px 12px rgba(62, 12, 27, 0.08), 0 18px 34px rgba(62, 12, 27, 0.1);
+}
+
+.tarjeta-foto {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  background: var(--fondo);
+  overflow: hidden;
+}
+
+.tarjeta-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tarjeta-sinfoto {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  opacity: 0.35;
+}
+
+.tarjeta-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 13px 14px 15px;
+  flex: 1;
+}
+
+.tarjeta-nombre {
+  font-family: var(--titulo);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+  /* Dos líneas como máximo: si no, las tarjetas quedan de alturas distintas. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  /* Reserva siempre dos líneas para que los precios queden alineados entre
+     tarjetas, tenga el nombre una línea o dos. */
+  min-height: calc(2 * 1.25em);
+  min-height: 2lh;
+}
+
+.tarjeta-precios {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.tarjeta-venta {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--acento);
+}
+
+.tarjeta-porcion {
+  font-size: 12px;
+  color: var(--texto);
+}
+
+.tarjeta-tenue {
+  color: var(--tenue);
+}
+
+.tarjeta-pie {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: var(--tenue);
+  padding-top: 7px;
+  border-top: 1px solid var(--borde);
+  margin-top: auto;
+}
+
+.tarjeta-punto {
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta {
+    transition: none;
+  }
+
+  .tarjeta:hover {
+    transform: none;
+  }
+}
+
 /* ---------- Estado vacío ---------- */
 
 .vacio {
@@ -1037,6 +1243,32 @@ button:focus-visible {
 
   .btn-nueva {
     min-height: 44px;
+  }
+
+  .sidebar-botones {
+    flex: 1 1 100%;
+  }
+
+  .btn-galeria {
+    min-height: 44px;
+  }
+
+  /* Dos columnas en celular: entran de a pares sin que la foto quede diminuta. */
+  .galeria-grilla {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .galeria-encabezado .btn-nueva {
+    display: none;
+  }
+
+  .tarjeta-cuerpo {
+    padding: 10px 11px 12px;
+  }
+
+  .tarjeta-nombre {
+    font-size: 14px;
   }
 
   .buscador {

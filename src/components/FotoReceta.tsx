@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
-import { borrarFoto, cargarFoto, guardarFoto } from '../lib/db'
+import { useRef, useState } from 'react'
+import { borrarFoto, guardarFoto } from '../lib/db'
 import { procesarFoto } from '../lib/image'
+import { useFotoUrl } from '../lib/useFotoUrl'
 import { nuevoId } from '../lib/types'
 
 interface Props {
@@ -9,31 +10,10 @@ interface Props {
 }
 
 export default function FotoReceta({ fotoId, onCambiarFoto }: Props) {
-  const [url, setUrl] = useState<string | null>(null)
+  const url = useFotoUrl(fotoId)
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    let vivo = true
-    let objectUrl: string | null = null
-
-    if (!fotoId) {
-      setUrl(null)
-      return
-    }
-
-    cargarFoto(fotoId).then((blob) => {
-      if (!vivo || !blob) return
-      objectUrl = URL.createObjectURL(blob)
-      setUrl(objectUrl)
-    })
-
-    return () => {
-      vivo = false
-      if (objectUrl) URL.revokeObjectURL(objectUrl)
-    }
-  }, [fotoId])
 
   async function alElegirArchivo(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
