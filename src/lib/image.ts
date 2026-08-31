@@ -53,7 +53,19 @@ export function blobADataUrl(blob: Blob): Promise<string> {
   })
 }
 
+/**
+ * Convierte una data: URL de imagen en Blob.
+ *
+ * Valida el prefijo a propósito: esto se llama con strings que vienen de un
+ * backup, y un backup es un archivo que alguien te puede mandar. Sin la
+ * validación, un "backup" con "fotos": { "x": "https://donde-sea/pixel.png" }
+ * hacía que la app pidiera esa URL sola al importarlo, avisándole al que lo
+ * mandó que lo abriste y desde qué IP.
+ */
 export async function dataUrlABlob(dataUrl: string): Promise<Blob> {
+  if (!/^data:image\/(png|jpeg|jpg|webp|gif);base64,/i.test(dataUrl)) {
+    throw new Error('La foto del backup no tiene un formato válido.')
+  }
   const res = await fetch(dataUrl)
   return res.blob()
 }
